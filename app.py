@@ -26,27 +26,14 @@ def guardar():
     datos = request.get_json()
     nombre = datos.get('nombre')
     correo = datos.get('correo')
-    nuevo_dato = pd.DataFrame({"Nombre": [nombre], "Correo": [correo]})
-
-    if os.path.exists("datos_contactos.csv"):
-        df = pd.read_csv("datos_contactos.csv")
-        df = pd.concat([df, nuevo_dato], ignore_index=True)
+    df = pd.DataFrame({"Nombre": [nombre], "Correo": [correo]})
+    
+    if os.path.isfile('datos.csv'):
+        df.to_csv('datos.csv', index=False)
     else:
-        df = nuevo_dato
-        df.to_csv("datos_contactos.csv", index=False)   
-
-    print(f"Nombre: {nombre}, Correo: {correo}")
-    return jsonify({"mensaje": "Datos recibidos correctamente"}), 200
+        pd.DataFrame(columns=["Nombre", "Correo"]).to_csv('datos.csv', index=False)
 
 
-df = pd.DataFrame({
-    "Nombre": ["Ana", "luis", "Carlos"],
-    "Edad": [23, 30, 28],
-})
-print(df)
-
-df = pd.read_excel("data\intento 1.xlsx")
-print(df.head())
 
 if __name__ == '__main__':
     app.run(debug=True)
